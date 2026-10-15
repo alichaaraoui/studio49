@@ -173,25 +173,14 @@
   });
 
   /* team: a plain list with keyword chips */
-  // each keyword: a color + a tiny 3×3 dot-matrix icon
-  const TAG = {
-    Leadership: ["#5f3dc4", "#e5dbff", "010111010"], Design: ["#e8590c", "#ffe3d3", "101010101"], Development: ["#1c7ed6", "#d6ecff", "110001110"],
-    Clients: ["#c2255c", "#ffdeeb", "111101111"], Comms: ["#2b8a3e", "#d8f5dd", "100110111"], Product: ["#9c36b5", "#f6d9fb", "111010010"],
-    Recruiting: ["#e67700", "#fff0c2", "010111101"], Operations: ["#0c8599", "#d0f4f7", "101010111"],
-  };
-  const icon = (bits) => `<svg viewBox="0 0 11 11" aria-hidden="true">${[...bits].map((b, i) => (b === "1" ? `<circle cx="${1.5 + (i % 3) * 4}" cy="${1.5 + Math.floor(i / 3) * 4}" r="1.5"/>` : "")).join("")}</svg>`;
-  const chip = (t) => { const [c, p, bits] = TAG[t] || ["#85857f", "#e9e9e6", "000010000"]; return `<span class="tag" style="--c:${c};--p:${p}">${icon(bits)}${t}</span>`; };
+  // each keyword gets a bright dot, like Design at Yale's directory
+  const TAG = { Leadership: "#2b2bd8", Design: "#e8364f", Development: "#3fb6e8", Clients: "#e6a118", Comms: "#2fc488", Product: "#9b3be6", Recruiting: "#f2622e", Operations: "#14a3a3" };
+  const chip = (t) => `<span class="tag"><i style="--c:${TAG[t] || "#85857f"}"></i>${t}</span>`;
   const people = $("[data-people]");
   if (people)
     people.innerHTML = S.people
       .map((p, i) => `<div><span class="n">${pad2(i + 1)}</span><span class="name">${p.name}</span><span class="tags">${(p.tags || []).map(chip).join("")}</span><span class="role mono grey">${p.role}</span></div>`)
       .join("");
-
-  if (M && !still)
-    $$(".tag").forEach((t) => {
-      t.addEventListener("pointerenter", () => M.animate(t, { scale: 1.08 }, { type: "spring", stiffness: 500, damping: 15 }));
-      t.addEventListener("pointerleave", () => M.animate(t, { scale: 1 }, { type: "spring", stiffness: 500, damping: 18 }));
-    });
 
   /* entrances, scroll reveals and page transitions */
   if (M && !still) {
