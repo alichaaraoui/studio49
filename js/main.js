@@ -7,8 +7,8 @@
 
   const MARK = `<span class="br">&lt;/</span>STUDIO&nbsp;49<span class="br">&gt;</span>`;
   const LINKS = [
-    ["index.html", "Studio", "home"],
     ["projects.html", "Projects", "projects"],
+    ["about.html", "About", "about"],
     ["team.html", "Team", "team"],
     ["contact.html", "Work with us", "contact"],
   ];
@@ -71,7 +71,7 @@
     </div>
     <div class="foot__big mark" aria-hidden="true">${MARK}</div>
     <div class="foot__base label"><span>© ${new Date().getFullYear()} Studio 49</span><span>Built in-house</span><a href="#top">Back to top ↑</a></div>`;
-  frame.append(foot);
+  if (page !== "home") frame.append(foot);
 
   /* ---------- clock (Charlotte) */
   const clock = () => {
@@ -87,6 +87,126 @@
     { rootMargin: "0px 0px -8% 0px" }
   );
   $$(".rv").forEach((el) => io.observe(el));
+
+  /* ---------- landing: dot field you can draw into */
+  const cv = $(".field");
+  if (cv) {
+    const stage = cv.parentElement;
+    const ctx = cv.getContext("2d");
+    const GLYPHS = {
+      4: ["00010", "00110", "01010", "10010", "11111", "00010", "00010"],
+      9: ["01110", "10001", "10001", "01111", "00001", "00010", "01100"],
+    };
+    let C, cols, rows, heat, ink, glyph, order, shown, raf, dpr;
+    const hint = $(".stage__hint");
+
+    const setup = () => {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      const { width: w, height: h } = stage.getBoundingClientRect();
+      C = w < 720 ? 12 : 14;
+      cv.width = w * dpr;
+      cv.height = h * dpr;
+      cols = Math.ceil(w / C);
+      rows = Math.ceil(h / C);
+      heat = new Float32Array(cols * rows);
+      ink = new Uint8Array(cols * rows);
+      glyph = new Uint8Array(cols * rows);
+      const k = Math.max(2, Math.min(5, Math.floor((rows * 0.4) / 7)));
+      const gw = 11 * k, gh = 7 * k;
+      const c0 = Math.floor((w < 720 ? cols * 0.5 : cols * 0.66) - gw / 2);
+      const r0 = Math.max(2, Math.floor(rows * (w < 720 ? 0.3 : 0.4) - gh / 2));
+      order = [];
+      ["4", "9"].forEach((d, di) =>
+        GLYPHS[d].forEach((line, y) =>
+          [...line].forEach((b, x) => {
+            if (b !== "1") return;
+            for (let i = 0; i < k; i++)
+              for (let j = 0; j < k; j++) {
+                const c = c0 + (di * 6 + x) * k + i, r = r0 + y * k + j;
+                if (c >= 0 && c < cols && r < rows) order.push(r * cols + c);
+              }
+          })
+        )
+      );
+      order.sort(() => Math.random() - 0.5);
+      shown = reduce ? order.length : 0;
+      order.slice(0, shown).forEach((i) => (glyph[i] = 1));
+      kick();
+    };
+
+    const draw = () => {
+      raf = 0;
+      if (shown < order.length) {
+        for (let n = 0; n < 6 && shown < order.length; n++) glyph[order[shown++]] = 1;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      let live = shown < order.length;
+      for (let r = 0; r < rows; r++)
+        for (let c = 0; c < cols; c++) {
+          const i = r * cols + c, x = c * C, y = r * C;
+          if (ink[i] || glyph[i]) {
+            ctx.fillStyle = "#0b0b0c";
+            ctx.fillRect(x + 1, y + 1, C - 2, C - 2);
+          } else if (heat[i] > 0.02) {
+            const s = (C - 2) * heat[i];
+            ctx.fillStyle = `rgba(11,11,12,${0.15 + heat[i] * 0.7})`;
+            ctx.fillRect(x + C / 2 - s / 2, y + C / 2 - s / 2, s, s);
+            heat[i] *= 0.93;
+            live = true;
+          } else {
+            heat[i] = 0;
+            ctx.fillStyle = "rgba(11,11,12,0.2)";
+            ctx.fillRect(x + C / 2 - 1, y + C / 2 - 1, 2, 2);
+          }
+        }
+      if (live) kick();
+    };
+    const kick = () => (raf ||= requestAnimationFrame(draw));
+
+    let down = false, last = null;
+    const paint = (x, y) => {
+      const c = Math.floor(x / C), r = Math.floor(y / C);
+      for (let dr = -1; dr <= 1; dr++)
+        for (let dc = -1; dc <= 1; dc++) {
+          const cc = c + dc, rr = r + dr;
+          if (cc < 0 || rr < 0 || cc >= cols || rr >= rows) continue;
+          const i = rr * cols + cc;
+          if (down && !dr && !dc) ink[i] = 1;
+          heat[i] = Math.max(heat[i], dr || dc ? 0.5 : 1);
+        }
+    };
+    const move = (e) => {
+      const b = cv.getBoundingClientRect();
+      const p = { x: e.clientX - b.left, y: e.clientY - b.top };
+      const steps = last ? Math.ceil(Math.hypot(p.x - last.x, p.y - last.y) / (C / 2)) : 1;
+      for (let s = 1; s <= steps; s++)
+        paint(last ? last.x + ((p.x - last.x) * s) / steps : p.x, last ? last.y + ((p.y - last.y) * s) / steps : p.y);
+      last = p;
+      kick();
+    };
+    cv.addEventListener("pointerdown", (e) => {
+      down = true;
+      last = null;
+      cv.setPointerCapture(e.pointerId);
+      stage.classList.add("drawn");
+      move(e);
+    });
+    cv.addEventListener("pointermove", move);
+    addEventListener("pointerup", () => (down = false));
+    cv.addEventListener("pointerleave", () => (last = null));
+    cv.addEventListener("dblclick", () => {
+      ink.fill(0);
+      kick();
+    });
+
+    let rt;
+    addEventListener("resize", () => {
+      clearTimeout(rt);
+      rt = setTimeout(setup, 150);
+    });
+    setup();
+  }
 
   /* ---------- services accordion */
   $$(".svc").forEach((svc) => {
