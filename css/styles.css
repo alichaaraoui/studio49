@@ -112,10 +112,10 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 .list { border-top: 1px solid var(--ink); margin: 0 8px 60px; }
 .list > div { display: grid; grid-template-columns: 50px minmax(180px, 1fr) 1.6fr 210px; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { display: inline-flex; align-items: center; gap: 9px; padding: 5px 15px 5px 12px; border-radius: 999px; cursor: default;
-  font-family: var(--sans); font-size: 15px; color: var(--ink); background: rgba(255,255,255,.55); border: 1px solid #d3d3ce; transition: border-color .2s; }
-.tag i { width: 11px; height: 11px; border-radius: 50%; background: var(--c); flex: none; }
-.tag:hover { border-color: var(--ink); }
+.tags { gap: 4px 14px; }
+.tag { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--c); white-space: nowrap; cursor: default; transition: opacity .2s; }
+.tag b { font-weight: 400; opacity: .55; transition: opacity .2s; }
+.tag:hover b { opacity: 1; }
 .list .n { font-family: var(--dot); font-weight: 800; font-size: 18px; color: var(--grey); }
 .list .name { font-family: var(--serif); font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.02em; }
 .list .role { text-align: right; }

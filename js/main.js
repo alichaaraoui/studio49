@@ -173,9 +173,9 @@
   });
 
   /* team: a plain list with keyword chips */
-  // each keyword gets a bright dot, like Design at Yale's directory
-  const TAG = { Leadership: "#2b2bd8", Design: "#e8364f", Development: "#3fb6e8", Clients: "#e6a118", Comms: "#2fc488", Product: "#9b3be6", Recruiting: "#f2622e", Operations: "#14a3a3" };
-  const chip = (t) => `<span class="tag"><i style="--c:${TAG[t] || "#85857f"}"></i>${t}</span>`;
+  // each keyword is a colored <bracket> tag, from the brand file
+  const TAG = { Leadership: "#5b4be8", Design: "#e8364f", Development: "#1c8fd6", Clients: "#d9480f", Comms: "#2b8a3e", Product: "#9c36b5", Recruiting: "#e67700", Operations: "#0c8599" };
+  const chip = (t) => `<span class="tag" style="--c:${TAG[t] || "#85857f"}"><b>&lt;</b>${t}<b>&gt;</b></span>`;
   const people = $("[data-people]");
   if (people)
     people.innerHTML = S.people
