@@ -5,47 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact — Studio 49</title>
   <meta name="description" content="Start a project with Studio 49.">
+  <meta name="theme-color" content="#efefed">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&family=Doto:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@800;900&family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="contact">
 <main class="page">
-  <h1 class="title">Contact</h1>
-  <div class="cols">
-    <p>We work with student organizations, startups, nonprofits and local businesses, on campus and off.</p>
-    <p>Tell us a little about your project and we'll get back to you to set up a quick call.</p>
-  </div>
-  <hr>
-  <form class="form" data-form novalidate>
-    <div class="two">
-      <label class="field"><span>Name</span><input name="name" required autocomplete="name"></label>
-      <label class="field"><span>Email</span><input name="email" type="email" required autocomplete="email"></label>
-    </div>
-    <label class="field"><span>Organization</span><input name="org" autocomplete="organization"></label>
-    <fieldset>
-      <legend>What do you need?</legend>
-      <div class="checks">
+  <section class="panel">
+    <h2>Work with us</h2>
+    <p class="sub">Student orgs, startups, nonprofits and local businesses. Tell us a little and we'll reach out.</p>
+    <form class="form" data-form novalidate>
+      <div class="two"><input name="name" required autocomplete="name" placeholder="Name" aria-label="Name"><input name="email" type="email" required autocomplete="email" placeholder="Email" aria-label="Email"></div>
+      <input name="org" autocomplete="organization" placeholder="Organization" aria-label="Organization">
+      <div class="checks" role="group" aria-label="What you need">
         <label><input type="checkbox" name="type" value="Website"><span>Website</span></label>
-        <label><input type="checkbox" name="type" value="Brand identity"><span>Brand identity</span></label>
+        <label><input type="checkbox" name="type" value="Brand identity"><span>Brand</span></label>
         <label><input type="checkbox" name="type" value="UI/UX"><span>UI/UX</span></label>
         <label><input type="checkbox" name="type" value="App"><span>App</span></label>
         <label><input type="checkbox" name="type" value="Social"><span>Social</span></label>
-        <label><input type="checkbox" name="type" value="Not sure"><span>Not sure yet</span></label>
+        <label><input type="checkbox" name="type" value="Not sure"><span>Not sure</span></label>
       </div>
-    </fieldset>
-    <div class="two">
-      <label class="field"><span>Timeline</span><select name="timeline"><option value="">Select</option><option>As soon as possible</option><option>This semester</option><option>Next semester</option><option>Flexible</option></select></label>
-      <label class="field"><span>Budget</span><select name="budget"><option value="">Select</option><option>Unpaid / student org</option><option>Under $1k</option><option>$1k–$5k</option><option>$5k+</option><option>Not sure yet</option></select></label>
-    </div>
-    <label class="field"><span>About the project</span><textarea name="message" required></textarea></label>
-    <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <button class="send" type="submit">Send</button>
-    <p class="note" data-status aria-live="polite"></p>
-  </form>
-  <div class="done" aria-live="polite"><p class="title" style="font-size:clamp(44px,6vw,72px)">Thank you</p><p>We got your message and will be in touch soon.</p></div>
+      <div class="two">
+        <select name="timeline" aria-label="Timeline"><option value="">Timeline</option><option>As soon as possible</option><option>This semester</option><option>Next semester</option><option>Flexible</option></select>
+        <select name="budget" aria-label="Budget"><option value="">Budget</option><option>Unpaid / student org</option><option>Under $1k</option><option>$1k–$5k</option><option>$5k+</option><option>Not sure yet</option></select>
+      </div>
+      <textarea name="message" required placeholder="About the project" aria-label="About the project"></textarea>
+      <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="send" type="submit">Send ></button>
+      <p class="note" data-status aria-live="polite"></p>
+    </form>
+    <div class="done" aria-live="polite"><h2>Thank you</h2><p class="sub">We got your message and will be in touch.</p></div>
+  </section>
 </main>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
