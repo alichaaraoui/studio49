@@ -53,12 +53,6 @@
 
   addEventListener("scroll", () => nav.classList.toggle("is-stuck", scrollY > 8), { passive: true });
 
-  /* ---------- corner ticks */
-  const ticks = document.createElement("div");
-  ticks.className = "ticks";
-  ticks.innerHTML = "<i></i><i></i><i></i><i></i>";
-  document.body.append(ticks);
-
   /* ---------- footer */
   const social = [
     S.instagram && `<li><a href="${S.instagram}" target="_blank" rel="noopener">Instagram ↗</a></li>`,
@@ -76,7 +70,7 @@
       <div><h4 class="label">Studio</h4><ul><li>Charlotte, NC</li><li>Local <span data-clock>--:--</span></li><li class="status">Inquiries open</li></ul></div>
     </div>
     <div class="foot__big mark" aria-hidden="true">${MARK}</div>
-    <div class="foot__base label"><span>© ${new Date().getFullYear()} Studio 49</span><span>Built in-house<span class="cursor" style="height:9px;width:5px"></span></span><a href="#top">Back to top ↑</a></div>`;
+    <div class="foot__base label"><span>© ${new Date().getFullYear()} Studio 49</span><span>Built in-house</span><a href="#top">Back to top ↑</a></div>`;
   frame.append(foot);
 
   /* ---------- clock (Charlotte) */
@@ -93,63 +87,6 @@
     { rootMargin: "0px 0px -8% 0px" }
   );
   $$(".rv").forEach((el) => io.observe(el));
-
-  /* ---------- hero cells */
-  const cells = $(".cells");
-  if (cells) {
-    // [col, row, text, vertical, horizontal]; cursor blocks: "■" ink, "▪" pop
-    const desk = {
-      cols: 8, rows: 3,
-      words: [
-        [1, 1, "Designers<br>and"], [3, 1, "developers"], [6, 1, "who", "b", "r"], [8, 1, "▪", "t", "r"],
-        [2, 1, "■", "b"], [2, 2, "build", "t", "r"],
-        [7, 2, "things<br>people", "b"], [8, 2, "remember.", "b"],
-        [1, 3, "Good is not<br>where we stop."], [3, 3, "▪", "b"],
-        [5, 3, "It's where<br>we begin.", "b"], [7, 3, "■", "b", "r"], [8, 3, "S49 — '26", "b", "r"],
-      ],
-    };
-    const mob = {
-      cols: 4, rows: 5,
-      words: [
-        [1, 1, "Designers<br>and"], [3, 1, "developers"], [4, 2, "▪", "t", "r"],
-        [1, 2, "who build", "b"], [3, 4, "things people<br>remember.", "b"],
-        [1, 5, "Good is where<br>we begin.", "b"], [4, 5, "S49", "b", "r"], [2, 4, "■", "b"],
-      ],
-    };
-    const build = () => {
-      const L = innerWidth < 720 ? mob : desk;
-      cells.style.setProperty("--cols", L.cols);
-      cells.style.setProperty("--rows", L.rows);
-      const map = {};
-      L.words.forEach(([c, r, t, v, h]) => (map[`${c},${r}`] = { t, v, h }));
-      let html = "";
-      for (let r = 1; r <= L.rows; r++)
-        for (let c = 1; c <= L.cols; c++) {
-          const w = map[`${c},${r}`];
-          let inner = w ? w.t : "";
-          if (inner === "■") inner = '<span class="blk"></span>';
-          if (inner === "▪") inner = '<span class="blk p"></span>';
-          const delay = reduce ? 0 : ((r - 1) * L.cols + c) * 28;
-          html += `<div class="cell"${w?.v ? ` data-v="${w.v}"` : ""}${w?.h ? ` data-h="${w.h}"` : ""} style="animation-delay:${delay}ms">${inner}</div>`;
-        }
-      cells.innerHTML = html;
-    };
-    build();
-    let lastW = innerWidth;
-    addEventListener("resize", () => {
-      if ((innerWidth < 720) !== (lastW < 720)) build();
-      lastW = innerWidth;
-    });
-    if (!reduce) {
-      setInterval(() => {
-        const all = $$(".cell", cells).filter((c) => !c.textContent.trim() && !c.children.length);
-        const el = all[Math.floor(Math.random() * all.length)];
-        if (!el) return;
-        el.classList.add("flash");
-        setTimeout(() => el.classList.remove("flash"), 140);
-      }, 1900);
-    }
-  }
 
   /* ---------- services accordion */
   $$(".svc").forEach((svc) => {
