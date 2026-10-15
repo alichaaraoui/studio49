@@ -10,18 +10,18 @@ window.S49 = {
   linkedin: "",
 
   teams: {
-    leadership: { name: "Leadership", glyph: "◆" },
-    design: { name: "Design", glyph: "●" },
-    engineering: { name: "Engineering", glyph: "■" },
-    clients: { name: "Clients & Comms", glyph: "▲" },
-    operations: { name: "Operations", glyph: "✳" },
+    leadership: { name: "Leadership" },
+    design: { name: "Design" },
+    engineering: { name: "Engineering" },
+    clients: { name: "Clients & Comms" },
+    operations: { name: "Operations" },
   },
 
   // `role` shows on the card / directory. `exec: true` puts someone in the
   // board grid at the top of the Team page.
   people: [
-    { name: "Ali Chaaraoui", role: "Leadership", teams: ["leadership", "design", "engineering", "clients", "operations"], exec: true },
-    { name: "Yasmine Chiboub", role: "Leadership", teams: ["leadership", "design", "engineering", "clients", "operations"], exec: true },
+    { name: "Ali Chaaraoui", role: "Leadership", teams: ["leadership"], exec: true },
+    { name: "Yasmine Chiboub", role: "Leadership", teams: ["leadership"], exec: true },
     { name: "Imani", role: "Product Manager", teams: [], exec: true },
     { name: "Lea Ahmad", role: "Secretary", teams: ["clients"], exec: true },
     { name: "Mallek Bara", role: "Head of Recruitment", teams: [], exec: true },

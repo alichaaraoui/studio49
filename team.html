@@ -4,61 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Team — Studio 49</title>
-  <meta name="description" content="The designers, developers and organizers behind Studio 49.">
-  <meta name="theme-color" content="#0b0b0c">
+  <meta name="description" content="The people behind Studio 49.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300..800&family=Archivo+Black&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&family=Pixelify+Sans:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body data-page="team" id="top">
-<div class="frame">
-
-  <header class="phead">
-    <div class="phead__top">
-      <h1 class="h-xl rv">Team</h1>
-      <p class="label rv"><span class="pixel pop" data-count>16</span> people · 5 teams</p>
-    </div>
-    <div class="phead__cols">
-      <div class="rv"><p>Studio 49 is a team of student designers, developers and organizers. We split into small teams — design, engineering, clients &amp; communications and operations — and come together on every project.</p></div>
-      <div class="rv"><p>Every project gets designers and developers from day one, so what we sketch is what we ship.</p><p><a href="contact.html" style="text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--grey-2)">Want to work with us? →</a></p></div>
-    </div>
-  </header>
-
-  <div class="wrap"><hr class="rule"></div>
-
-  <section class="section section--tight">
-    <div class="tabs" role="tablist" data-tabs style="margin-bottom:clamp(28px,4vw,48px)">
-      <button role="tab" aria-selected="true" aria-controls="p-board">Board</button>
-      <button role="tab" aria-selected="false" aria-controls="p-dir">Directory</button>
-    </div>
-
-    <div id="p-board" role="tabpanel">
-      <div class="lead-grid">
-        <div class="lead-grid__intro rv">
-          <h3>Meet the board</h3>
-          <p>The board runs the studio day to day: projects and clients, recruiting, operations and keeping every team moving in the same direction.</p>
-          <p><a href="contact.html">Work with us →</a></p>
-        </div>
-        <div class="cards" data-board></div>
-      </div>
-    </div>
-
-    <div id="p-dir" role="tabpanel" hidden>
-      <div class="dir-tools">
-        <label class="search"><input type="search" placeholder="Search for a member…" data-search aria-label="Search members"><button class="chip" type="button" data-clear aria-label="Clear search" style="border:0">✕</button></label>
-      </div>
-      <div class="chipset" data-chips style="margin-top:16px"></div>
-      <table class="dir" data-dir>
-        <thead><tr><th class="label" style="padding-left:36px">Name</th><th class="label">Teams</th><th class="label" style="text-align:right">Role</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="dir-empty">No one matches that — try another name.</p>
-    </div>
-  </section>
-
-</div>
+<body data-page="team">
+<main class="page">
+  <h1 class="title">Team</h1>
+  <div class="cols">
+    <p>Studio 49 is a group of student designers, developers and organizers, split into small teams that come together on every project.</p>
+    <p>Design, engineering, clients &amp; communications and operations, with leadership across all of them.</p>
+  </div>
+  <hr>
+  <div class="tabs" role="tablist" data-tabs>
+    <button role="tab" aria-selected="true" aria-controls="t-board">Board</button>
+    <button role="tab" aria-selected="false" aria-controls="t-dir">Directory</button>
+  </div>
+  <div id="t-board" class="split">
+    <aside>
+      <h3>Meet the board</h3>
+      <p>The board runs the studio day to day: clients, recruiting, operations and keeping every team moving.</p>
+      <p><a class="u" href="contact.html">Work with us →</a></p>
+    </aside>
+    <div class="cards" data-board></div>
+  </div>
+  <div id="t-dir" hidden>
+    <label class="search"><input type="search" placeholder="Search for a member…" data-search aria-label="Search members"></label>
+    <div class="filters" data-filters></div>
+    <table>
+      <thead><tr><th>Name</th><th>Team</th><th>Role</th></tr></thead>
+      <tbody data-dir></tbody>
+    </table>
+    <p class="empty" hidden>No one matches that.</p>
+  </div>
+</main>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
 </body>
