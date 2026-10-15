@@ -33,12 +33,53 @@
       <p class="bio">Studio 49 is a student-run design and development studio. Websites, brands and products, from brief to launch.</p>
       ${S.email ? `<a class="go" href="mailto:${S.email}">${S.email}</a>` : ""}
     </aside>
-    <div class="big">STUDIO 49</div>`;
+    <div class="big">${[..."STUDIO 49"].map((c) => `<span>${c === " " ? "&nbsp;" : c}</span>`).join("")}</div>`;
   document.body.append(menu);
+  /* menu open / close — Motion springs + staggers */
+  const M = window.Motion;
   const plus = $(".plus", pills);
-  const setMenu = (open) => { document.body.classList.toggle("menu-open", open); plus.setAttribute("aria-expanded", open); };
-  plus.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
+  const plusIcon = $("span", plus);
+  let open = false;
+  const EASE = [0.7, 0, 0.2, 1];
+  const setMenu = async (want) => {
+    if (want === open) return;
+    open = want;
+    document.body.classList.toggle("menu-open", open);
+    plus.setAttribute("aria-expanded", open);
+    const links = $$("nav a", menu), side = $$("aside > *", menu), letters = $$(".big span", menu);
+    if (!M || still) {
+      menu.style.visibility = open ? "visible" : "hidden";
+      menu.style.clipPath = open ? "inset(0 0 0% 0 round 14px)" : "inset(0 0 100% 0 round 14px)";
+      return;
+    }
+    M.animate(plusIcon, { rotate: open ? 135 : 0 }, { type: "spring", stiffness: 300, damping: 18 });
+    if (open) {
+      menu.style.visibility = "visible";
+      M.animate(links, { y: 60, opacity: 0 }, { duration: 0 });
+      M.animate(side, { y: 30, opacity: 0, scale: 0.96 }, { duration: 0 });
+      M.animate(letters, { y: "110%", opacity: 1 }, { duration: 0 });
+      M.animate(side, { opacity: 0 }, { duration: 0 });
+      await Promise.all([
+        M.animate(menu, { clipPath: "inset(0 0 0% 0 round 14px)" }, { duration: 0.75, ease: EASE }),
+        M.animate(links, { y: 0, opacity: 1 }, { delay: M.stagger(0.06, { startDelay: 0.28 }), type: "spring", stiffness: 210, damping: 22 }),
+        M.animate(side, { y: 0, opacity: 1, scale: 1 }, { delay: M.stagger(0.08, { startDelay: 0.45 }), type: "spring", stiffness: 200, damping: 24 }),
+        M.animate(letters, { y: "0%" }, { delay: M.stagger(0.035, { startDelay: 0.4 }), type: "spring", stiffness: 260, damping: 24 }),
+      ]);
+    } else {
+      M.animate(links, { y: -30, opacity: 0 }, { duration: 0.25, delay: M.stagger(0.03, { from: "last" }) });
+      M.animate([...side, ...letters], { opacity: 0 }, { duration: 0.2 });
+      await M.animate(menu, { clipPath: "inset(0 0 100% 0 round 14px)" }, { duration: 0.6, ease: EASE, delay: 0.12 });
+      if (!open) { menu.style.visibility = "hidden"; M.animate(letters, { opacity: 1 }, { duration: 0 }); }
+    }
+  };
+  plus.addEventListener("click", () => setMenu(!open));
   addEventListener("keydown", (e) => e.key === "Escape" && setMenu(false));
+  // springy hover on the menu links
+  if (M && !still)
+    $$("nav a", menu).forEach((a) => {
+      a.addEventListener("pointerenter", () => M.animate(a, { x: 14 }, { type: "spring", stiffness: 400, damping: 20 }));
+      a.addEventListener("pointerleave", () => M.animate(a, { x: 0 }, { type: "spring", stiffness: 400, damping: 20 }));
+    });
 
   /* footer: big dot-matrix sign-off */
   if (page !== "home") {
@@ -131,12 +172,46 @@
     if (!still) setInterval(() => { if (!ptr) setWord((wi + 1) % words.length); }, small ? 2600 : 3200);
   });
 
-  /* team: a plain list */
+  /* team: a plain list with keyword chips */
+  const TAG = { Leadership: "#111", Design: "#d71921", Development: "#3b5bdb", Clients: "#e3a008", Comms: "#2f9e44", Product: "#ae3ec9", Recruiting: "#f76707", Operations: "#85857f" };
   const people = $("[data-people]");
   if (people)
     people.innerHTML = S.people
-      .map((p, i) => `<div><span class="n">${pad2(i + 1)}</span><span class="name">${p.name}</span><span class="role mono grey">${p.role}${p.teams.length && S.teams[p.teams[0]].name !== p.role ? " · " + p.teams.map((k) => S.teams[k].name).join(", ") : ""}</span></div>`)
+      .map((p, i) => `<div><span class="n">${pad2(i + 1)}</span><span class="name">${p.name}</span><span class="tags">${(p.tags || []).map((t) => `<span class="tag"><i style="--c:${TAG[t] || "#85857f"}"></i>${t}</span>`).join("")}</span><span class="role mono grey">${p.role}</span></div>`)
       .join("");
+
+  /* entrances, scroll reveals and page transitions */
+  if (M && !still) {
+    const split = (el) => {
+      el.innerHTML = el.textContent.trim().split(/\s+/).map((w) => `<span class="w"><span>${w}</span></span>`).join(" ");
+      return $$(".w > span", el);
+    };
+    M.animate(".pills > *", { y: [-24, 0], opacity: [0, 1] }, { delay: M.stagger(0.07), type: "spring", stiffness: 260, damping: 20 });
+    const h = $(".head h1, .under h1");
+    if (h) M.animate(split(h), { y: ["105%", "0%"] }, { delay: M.stagger(0.05, { startDelay: page === "home" ? 0.35 : 0.1 }), type: "spring", stiffness: 160, damping: 22 });
+    M.animate(".head p, .under .links", { y: [16, 0], opacity: [0, 1] }, { delay: 0.35, duration: 0.7, ease: [0.2, 0.7, 0.1, 1] });
+    M.animate(".display", { scale: [0.96, 1], opacity: [0, 1] }, { type: "spring", stiffness: 120, damping: 20 });
+
+    const groups = [".cards", ".laws", ".works", ".list", ".label", ".panel", ".foot"];
+    groups.forEach((g) =>
+      $$(g).forEach((box) => {
+        const kids = [".label", ".panel", ".foot"].includes(g) ? [box] : [...box.children];
+        M.animate(kids, { opacity: 0, y: 28 }, { duration: 0 });
+        M.inView(box, () => { M.animate(kids, { opacity: 1, y: 0 }, { delay: M.stagger(0.05), type: "spring", stiffness: 170, damping: 24 }); }, { amount: 0.1 });
+      })
+    );
+
+    // page transitions: fade the page out before following an internal link
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a[href]");
+      if (!a || a.target || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || url.pathname === location.pathname || a.getAttribute("href").startsWith("#")) return;
+      e.preventDefault();
+      M.animate("main, .foot", { opacity: 0, y: -12 }, { duration: 0.28, ease: [0.4, 0, 1, 1] }).then(() => (location.href = url.href));
+    });
+    addEventListener("pageshow", (e) => { if (e.persisted) M.animate("main, .foot", { opacity: 1, y: 0 }, { duration: 0 }); });
+  }
 
   /* form */
   const form = $("[data-form]");

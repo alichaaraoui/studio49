@@ -17,24 +17,26 @@ window.S49 = {
     operations: { name: "Operations" },
   },
 
+  // `tags` are the little keyword chips next to each name on the Team page —
+  // swap in real specialties (UI/UX, Web, Branding, Illustration…) anytime.
   // `role` shows on the card / directory. `exec: true` puts someone in the
   // board grid at the top of the Team page.
   people: [
-    { name: "Ali Chaaraoui", role: "Leadership", teams: ["leadership"], exec: true },
-    { name: "Yasmine Chiboub", role: "Leadership", teams: ["leadership"], exec: true },
-    { name: "Imani", role: "Product Manager", teams: [], exec: true },
-    { name: "Lea Ahmad", role: "Secretary", teams: ["clients"], exec: true },
-    { name: "Mallek Bara", role: "Head of Recruitment", teams: [], exec: true },
-    { name: "Joseph Diku", role: "Operations", teams: ["operations"], exec: true },
-    { name: "Tejuan Carter", role: "Designer", teams: ["design"] },
-    { name: "Amaya Clark", role: "Designer", teams: ["design"] },
-    { name: "Antoanelle Darko", role: "Designer", teams: ["design"] },
-    { name: "Mihir Joshi", role: "Engineer", teams: ["engineering"] },
-    { name: "Saanvi Kundu", role: "Engineer", teams: ["engineering"] },
-    { name: "Sindu Rachakonda", role: "Engineer", teams: ["engineering"] },
-    { name: "Bayan Ammar", role: "Clients & Comms", teams: ["clients"] },
-    { name: "Mohamad Amer", role: "Clients & Comms", teams: ["clients"] },
-    { name: "Maya Hanbali", role: "Operations", teams: ["operations"] },
-    { name: "Shreya Dey", role: "Operations", teams: ["operations"] },
+    { name: "Ali Chaaraoui", role: "Leadership", tags: ["Leadership", "Design", "Development", "Clients"], teams: ["leadership"], exec: true },
+    { name: "Yasmine Chiboub", role: "Leadership", tags: ["Leadership", "Design", "Development", "Clients"], teams: ["leadership"], exec: true },
+    { name: "Imani", role: "Product Manager", tags: ["Product"], teams: [], exec: true },
+    { name: "Lea Ahmad", role: "Secretary", tags: ["Clients", "Comms"], teams: ["clients"], exec: true },
+    { name: "Mallek Bara", role: "Head of Recruitment", tags: ["Recruiting"], teams: [], exec: true },
+    { name: "Joseph Diku", role: "Operations", tags: ["Operations"], teams: ["operations"], exec: true },
+    { name: "Tejuan Carter", role: "Designer", tags: ["Design"], teams: ["design"] },
+    { name: "Amaya Clark", role: "Designer", tags: ["Design"], teams: ["design"] },
+    { name: "Antoanelle Darko", role: "Designer", tags: ["Design"], teams: ["design"] },
+    { name: "Mihir Joshi", role: "Engineer", tags: ["Development"], teams: ["engineering"] },
+    { name: "Saanvi Kundu", role: "Engineer", tags: ["Development"], teams: ["engineering"] },
+    { name: "Sindu Rachakonda", role: "Engineer", tags: ["Development"], teams: ["engineering"] },
+    { name: "Bayan Ammar", role: "Clients & Comms", tags: ["Clients", "Comms"], teams: ["clients"] },
+    { name: "Mohamad Amer", role: "Clients & Comms", tags: ["Clients", "Comms"], teams: ["clients"] },
+    { name: "Maya Hanbali", role: "Operations", tags: ["Operations"], teams: ["operations"] },
+    { name: "Shreya Dey", role: "Operations", tags: ["Operations"], teams: ["operations"] },
   ],
 };

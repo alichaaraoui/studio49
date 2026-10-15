@@ -44,16 +44,14 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 .pills .oval span { display: block; transition: opacity .35s, transform .35s; }
 .pills .oval span.out { opacity: 0; transform: translateY(-8px); }
 .pills .plus { width: 34px; cursor: pointer; font-size: 18px; font-family: var(--sans); padding: 0; }
-.pills .plus span { display: block; transition: transform .35s; }
-.menu-open .pills .plus span { transform: rotate(45deg); }
+.pills .plus span { display: block; }
 .pills a:hover, .pills .plus:hover { background: var(--ink); color: var(--bg); }
 
 /* ---------- the "+" menu (Hex sidebar, as an overlay) */
 .menu { position: fixed; inset: 10px; z-index: 30; background: var(--panel); color: #f2f2f2; border-radius: var(--r); padding: 76px var(--pad) var(--pad);
   display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: 1fr auto; gap: var(--pad);
   background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1.3px); background-size: 22px 22px;
-  clip-path: inset(0 0 100% 0 round var(--r)); transition: clip-path .7s cubic-bezier(.7,0,.2,1); }
-.menu-open .menu { clip-path: inset(0 0 0 0 round var(--r)); }
+  visibility: hidden; clip-path: inset(0 0 100% 0 round var(--r)); }
 .menu nav { display: grid; align-content: start; gap: 2px; }
 .menu nav a { font-family: var(--serif); font-size: clamp(44px, 6.4vw, 92px); line-height: 1.02; letter-spacing: -0.035em; color: #6c6c68; transition: color .2s; display: flex; align-items: baseline; gap: 18px; }
 .menu nav a small { font-family: var(--dot); font-size: 18px; font-weight: 800; color: #4a4a47; }
@@ -63,7 +61,9 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 .touch:hover { background: #fff; }
 .touch .serif { font-size: 28px; }
 .menu .bio { color: #9a9a95; font-size: 14px; max-width: 34ch; }
-.menu .big { grid-column: 1 / -1; font-family: var(--dot); font-weight: 900; font-size: clamp(64px, 13vw, 210px); line-height: .82; letter-spacing: -0.02em; color: #f2f2f2; }
+.menu nav a, .menu aside > *, .menu .big span { will-change: transform, opacity; }
+.menu .big span { display: inline-block; }
+.menu .big { overflow: hidden; grid-column: 1 / -1; font-family: var(--dot); font-weight: 900; font-size: clamp(64px, 13vw, 210px); line-height: .82; letter-spacing: -0.02em; color: #f2f2f2; }
 
 /* ---------- landing */
 .home { min-height: 100svh; padding: 72px 10px 10px; display: grid; grid-template-rows: 1fr auto; gap: 10px; }
@@ -110,7 +110,10 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 
 /* team: just a list */
 .list { border-top: 1px solid var(--ink); margin: 0 8px 60px; }
-.list div { display: grid; grid-template-columns: 60px 1fr 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.list > div { display: grid; grid-template-columns: 50px minmax(180px, 1fr) 1.6fr auto; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px 3px 9px; font-size: 13.5px; background: rgba(255,255,255,.35); }
+.tag i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
 .list .n { font-family: var(--dot); font-weight: 800; font-size: 18px; color: var(--grey); }
 .list .name { font-family: var(--serif); font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.02em; }
 .list .role { text-align: right; }
@@ -153,8 +156,11 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
   .head p { justify-self: start; }
   .under .links { justify-content: flex-start; }
   .cards, .works, .form .two { grid-template-columns: 1fr; }
-  .list div { grid-template-columns: 40px 1fr; }
-  .list .role { grid-column: 2; text-align: left; }
+  .list > div { grid-template-columns: 34px 1fr; gap: 8px 12px; }
+  .list .tags, .list .role { grid-column: 2; text-align: left; }
   .display { min-height: 52vh; }
 }
 @media (prefers-reduced-motion: reduce) { .menu, .pills .plus { transition: none; } }
+
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
+.w > span { display: inline-block; }
