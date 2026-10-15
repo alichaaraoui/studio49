@@ -5,25 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Studio 49</title>
   <meta name="description" content="Studio 49 is a student-run design and development studio.">
-  <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&family=Doto:wght@900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="home">
-<main class="home caps">
-  <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="center"><h1 class="ring" aria-label="Studio 49"></h1><span class="name">Studio 49</span></div>
-  <div class="c tl"><span>Studio 49</span><span class="dim">Design</span></div>
-  <div class="c tr"><span>Studio 49</span><span class="dim">Development</span></div>
-  <nav class="tc"><a href="about.html">About</a><a href="projects.html">Projects</a></nav>
-  <nav class="bc"><a href="team.html">Team</a><a href="contact.html">Contact</a></nav>
-  <span class="side l">Design and development studio</span>
-  <span class="side r">Design and development studio</span>
-  <div class="c bl"><span class="dim">Student run</span><span>No. 49</span></div>
-  <div class="c br"><span class="dim">Student run</span><span>No. 49</span></div>
+<main class="home">
+  <p class="hint">Move it around. Click to splash.</p>
+  <svg class="liquid" viewBox="0 0 600 600" role="img" aria-label="Liquid gold. Move to pull it, click to splash.">
+    <defs>
+      <linearGradient id="au" gradientUnits="userSpaceOnUse" x1="120" y1="80" x2="480" y2="540">
+        <stop offset="0" stop-color="#fff1c4"/><stop offset=".35" stop-color="#e2bd62"/>
+        <stop offset=".7" stop-color="#a77d2c"/><stop offset="1" stop-color="#5e4212"/>
+      </linearGradient>
+      <filter id="goo" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="b"/>
+        <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -13" result="goo"/>
+        <feGaussianBlur in="goo" stdDeviation="7" result="soft"/>
+        <feSpecularLighting in="soft" surfaceScale="7" specularConstant="1.15" specularExponent="26" lighting-color="#fff7dd" result="spec">
+          <fePointLight id="light" x="200" y="120" z="320"/>
+        </feSpecularLighting>
+        <feComposite in="spec" in2="goo" operator="in" result="shine"/>
+        <feComposite in="goo" in2="shine" operator="arithmetic" k2="1" k3="1"/>
+      </filter>
+    </defs>
+    <g filter="url(#goo)" fill="url(#au)" data-blobs></g>
+  </svg>
+  <div>
+    <h1 class="say"><span class="gold">Studio 49</span> is a student-run design and development studio.</h1>
+    <p>We make websites, brands and products, and have a lot of fun doing it.</p>
+  </div>
+  <div class="ctas">
+    <a href="contact.html"><strong>Work with us →</strong><span>Have a project in mind? Tell us about it.</span></a>
+    <a href="projects.html"><strong>Projects →</strong><span>Our first work is cooking right now.</span></a>
+  </div>
 </main>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
