@@ -12,34 +12,10 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="team">
-<main class="page">
-  <h1 class="title">Team</h1>
-  <div class="cols">
-    <p>Studio 49 is a group of student designers, developers and organizers, split into small teams that come together on every project.</p>
-    <p>Design, engineering, clients &amp; communications and operations, with leadership across all of them.</p>
-  </div>
-  <hr>
-  <div class="tabs" role="tablist" data-tabs>
-    <button role="tab" aria-selected="true" aria-controls="t-board">Board</button>
-    <button role="tab" aria-selected="false" aria-controls="t-dir">Directory</button>
-  </div>
-  <div id="t-board" class="split">
-    <aside>
-      <h3>Meet the board</h3>
-      <p>The board runs the studio day to day: clients, recruiting, operations and keeping every team moving.</p>
-      <p><a class="u" href="contact.html">Work with us →</a></p>
-    </aside>
-    <div class="cards" data-board></div>
-  </div>
-  <div id="t-dir" hidden>
-    <label class="search"><input type="search" placeholder="Search for a member…" data-search aria-label="Search members"></label>
-    <div class="filters" data-filters></div>
-    <table>
-      <thead><tr><th>Name</th><th>Team</th><th>Role</th></tr></thead>
-      <tbody data-dir></tbody>
-    </table>
-    <p class="empty" hidden>No one matches that.</p>
-  </div>
+<main class="pane">
+  <p class="lead">Team. <span class="grey">Student designers, developers and organizers, in small teams that come together on every project.</span></p>
+  <div class="filter" data-filters></div>
+  <div class="grid people" data-people></div>
 </main>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>

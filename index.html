@@ -11,22 +11,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body data-page="home">
-<div class="home">
-  <main class="stage">
-    <canvas class="field-cv" aria-hidden="true"></canvas>
-    <p class="hint">Draw anything you want</p>
-    <div class="hero-l">
-      <div class="big">studio 49</div>
-      <h1>Studio 49 is a student-run design and development studio.</h1>
-      <p>We make websites, brands and products, and have fun doing it.</p>
-    </div>
-    <div class="hero-r">
-      <a href="contact.html"><strong>Work with us →</strong>Have a project in mind? Tell us about it.</a>
-      <a href="projects.html"><strong>Projects →</strong>Our first work is on the way.</a>
-    </div>
-  </main>
-</div>
+<body data-page="home" class="home">
+<main class="pane">
+  <canvas class="art" aria-label="Drop and drag rings to make a moiré pattern"></canvas>
+  <div class="cells">
+    <div class="solid"><p class="big">Designers and developers making websites, brands and products.</p><p class="small">Studio 49, a student-run studio</p></div>
+    <div></div><div></div><div></div>
+    <div></div><div></div><div></div>
+    <a class="solid" href="contact.html"><p class="small">Have a project?</p><p class="big">Work with us →</p></a>
+    <div class="solid ink"><p class="small">Every visit makes something new. Click to drop rings, drag to move them.</p><div class="btns"><button type="button" data-clear>Clear</button><button type="button" data-save>Save image</button></div></div>
+    <div></div><div></div>
+    <a class="solid" href="projects.html"><p class="small">Our first work is on the way.</p><p class="big">Projects →</p></a>
+  </div>
+</main>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
 </body>

@@ -3,146 +3,154 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const page = document.body.dataset.page;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const BG = "#f4f2ec", INK = "#111";
 
-  /* nav */
-  const link = (h, t, k) => `<a href="${h}"${k === page ? ' aria-current="page"' : ""}>${t}</a>`;
-  const nav = document.createElement("header");
-  nav.className = "nav";
-  nav.innerHTML =
-    link("projects.html", "Projects", "projects") +
-    link("about.html", "About", "about") +
-    `<a class="logo" href="index.html">studio 49</a>` +
-    link("team.html", "Team", "team") +
-    link("contact.html", "Contact", "contact");
-  (page === "home" ? $(".home") : document.body).prepend(nav);
-
-  /* footer (inner pages only) */
-  if (page !== "home") {
-    const foot = document.createElement("footer");
-    foot.className = "foot";
-    foot.innerHTML = `<span>© ${new Date().getFullYear()} Studio 49</span><nav>${
-      S.email ? `<a href="mailto:${S.email}">${S.email}</a>` : ""
-    }${S.instagram ? `<a href="${S.instagram}" target="_blank" rel="noopener">Instagram</a>` : ""}${
-      S.linkedin ? `<a href="${S.linkedin}" target="_blank" rel="noopener">LinkedIn</a>` : ""
-    }<a href="contact.html">Work with us</a></nav>`;
-    document.body.append(foot);
-  }
-
-  /* tabs */
-  $$("[data-tabs]").forEach((tabs) => {
-    const btns = $$("button", tabs);
-    btns.forEach((b) =>
-      b.addEventListener("click", () =>
-        btns.forEach((x) => {
-          x.setAttribute("aria-selected", x === b);
-          document.getElementById(x.getAttribute("aria-controls")).hidden = x !== b;
-        })
-      )
-    );
+  /* rail */
+  const links = [["index.html", "Home", "home"], ["about.html", "About", "about"], ["projects.html", "Projects", "projects"], ["team.html", "Team", "team"], ["contact.html", "Contact", "contact"]];
+  const rail = document.createElement("aside");
+  rail.className = "rail";
+  rail.innerHTML = `
+    <a class="brand" href="index.html">studio <br>49</a>
+    <p class="brand-sub">A student-run design &amp; development studio.</p>
+    <button class="burger" aria-expanded="false">Menu</button>
+    <nav class="menu">${links.map(([h, t, k]) => `<a href="${h}"${k === page ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</nav>
+    <div class="rail-foot">
+      ${S.email ? `<a href="mailto:${S.email}">${S.email}</a>` : ""}
+      ${S.instagram ? `<a href="${S.instagram}" target="_blank" rel="noopener">Instagram</a>` : ""}
+      <a href="contact.html">Start a project →</a>
+      <span>© ${new Date().getFullYear()} Studio 49</span>
+    </div>`;
+  document.body.prepend(rail);
+  $(".burger", rail).addEventListener("click", (e) => {
+    const open = rail.classList.toggle("open");
+    e.currentTarget.setAttribute("aria-expanded", open);
+    e.currentTarget.textContent = open ? "Close" : "Menu";
   });
 
-  /* landing: dot field you can draw on */
-  const cv = $(".field-cv");
-  if (cv) {
+  /* moiré: concentric rings from each source; overlaps make the pattern */
+  const rings = (ctx, w, h, sources, step) => {
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1;
+    const max = Math.hypot(w, h);
+    for (const s of sources) {
+      ctx.beginPath();
+      for (let r = step; r < max; r += step) {
+        ctx.moveTo(s.x + r, s.y);
+        ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+      }
+      ctx.stroke();
+    }
+  };
+  const fit = (cv) => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const { width, height } = cv.getBoundingClientRect();
+    cv.width = width * dpr;
+    cv.height = height * dpr;
     const ctx = cv.getContext("2d");
-    const C = 16;
-    let cols, rows, ink, trail, dpr, raf = 0, down = false, last = null;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w: width, h: height };
+  };
 
-    const setup = () => {
-      dpr = Math.min(devicePixelRatio || 1, 2);
-      const { width, height } = cv.getBoundingClientRect();
-      cv.width = width * dpr;
-      cv.height = height * dpr;
-      cols = Math.ceil(width / C);
-      rows = Math.ceil(height / C);
-      ink = new Uint8Array(cols * rows);
-      trail = new Float32Array(cols * rows);
-      kick();
+  const art = $(".art");
+  if (art) {
+    let g, sources = [], grabbed = null, raf = 0, t0 = performance.now();
+    const STEP = 9;
+    const seed = () => {
+      sources = [
+        { x: g.w * 0.38, y: g.h * 0.46, auto: true, p: 0 },
+        { x: g.w * 0.62, y: g.h * 0.54, auto: true, p: 2.1 },
+      ];
+      sources.forEach((s) => ((s.ox = s.x), (s.oy = s.y)));
     };
-    const draw = () => {
+    const frame = (now) => {
       raf = 0;
-      let live = false;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, cv.width, cv.height);
-      for (let r = 0; r < rows; r++)
-        for (let c = 0; c < cols; c++) {
-          const i = r * cols + c, x = c * C + C / 2, y = r * C + C / 2;
-          if (ink[i]) {
-            ctx.fillStyle = "#111";
-            ctx.fillRect(x - 6, y - 6, 12, 12);
-          } else {
-            const t = trail[i];
-            const s = 2 + t * 6;
-            ctx.fillStyle = `rgba(17,17,17,${0.16 + t * 0.4})`;
-            ctx.fillRect(x - s / 2, y - s / 2, s, s);
-            if (t > 0.01) { trail[i] = t * 0.92; live = true; } else trail[i] = 0;
-          }
+      const t = (now - t0) / 1000;
+      let moving = false;
+      for (const s of sources)
+        if (s.auto && !reduce) {
+          s.x = s.ox + Math.cos(t * 0.25 + s.p) * 40;
+          s.y = s.oy + Math.sin(t * 0.18 + s.p) * 28;
+          moving = true;
         }
-      if (live) kick();
+      rings(g.ctx, g.w, g.h, sources, STEP);
+      if (moving) kick();
     };
-    const kick = () => (raf ||= requestAnimationFrame(draw));
-    const hit = (x, y) => {
-      const c = Math.floor(x / C), r = Math.floor(y / C);
-      if (c < 0 || r < 0 || c >= cols || r >= rows) return;
-      const i = r * cols + c;
-      if (down) ink[i] = 1;
-      trail[i] = 1;
-    };
-    const move = (e) => {
-      const b = cv.getBoundingClientRect();
-      const p = { x: e.clientX - b.left, y: e.clientY - b.top };
-      const n = last ? Math.ceil(Math.hypot(p.x - last.x, p.y - last.y) / (C / 2)) : 1;
-      for (let s = 1; s <= n; s++)
-        hit(last ? last.x + ((p.x - last.x) * s) / n : p.x, last ? last.y + ((p.y - last.y) * s) / n : p.y);
-      last = p;
+    const kick = () => (raf ||= requestAnimationFrame(frame));
+    const setup = () => { g = fit(art); if (!sources.length) seed(); kick(); };
+
+    const at = (e) => { const b = art.getBoundingClientRect(); return { x: e.clientX - b.left, y: e.clientY - b.top }; };
+    art.addEventListener("pointerdown", (e) => {
+      const p = at(e);
+      grabbed = sources.find((s) => Math.hypot(s.x - p.x, s.y - p.y) < 40);
+      if (!grabbed) {
+        grabbed = { x: p.x, y: p.y };
+        sources.push(grabbed);
+        if (sources.length > 6) sources.shift();
+      }
+      grabbed.auto = false;
+      art.setPointerCapture(e.pointerId);
+      art.classList.add("grab");
       kick();
-    };
-    cv.addEventListener("pointerdown", (e) => { down = true; last = null; cv.setPointerCapture(e.pointerId); move(e); });
-    cv.addEventListener("pointermove", move);
-    cv.addEventListener("pointerleave", () => (last = null));
-    addEventListener("pointerup", () => (down = false));
-    cv.addEventListener("dblclick", () => { ink.fill(0); kick(); });
-    let t;
-    addEventListener("resize", () => { clearTimeout(t); t = setTimeout(setup, 150); });
+    });
+    art.addEventListener("pointermove", (e) => {
+      if (!grabbed) return;
+      Object.assign(grabbed, at(e));
+      kick();
+    });
+    addEventListener("pointerup", () => { grabbed = null; art.classList.remove("grab"); });
+    $("[data-clear]").addEventListener("click", () => { sources = []; kick(); });
+    $("[data-save]").addEventListener("click", () => {
+      art.toBlob((b) => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(b);
+        a.download = "studio49-moire.png";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      });
+    });
+    let rt;
+    addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(setup, 150); });
     setup();
   }
 
-  /* team */
-  const initials = (n) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join("");
-  const board = $("[data-board]");
-  if (board)
-    board.innerHTML = S.people
-      .filter((p) => p.exec)
-      .map((p) => `<div class="card"><div class="tile">${initials(p.name)}</div><p>${p.name}</p><p class="grey">${p.role}</p></div>`)
-      .join("");
+  /* project thumbnails: a fixed moiré per project */
+  $$("canvas[data-seed]").forEach((cv) => {
+    const draw = () => {
+      const { ctx, w, h } = fit(cv);
+      let n = +cv.dataset.seed;
+      const rnd = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
+      const src = Array.from({ length: 2 }, () => ({ x: w * (0.2 + rnd() * 0.6), y: h * (0.2 + rnd() * 0.6) }));
+      rings(ctx, w, h, src, 11);
+    };
+    draw();
+    addEventListener("resize", draw);
+  });
 
-  const dir = $("[data-dir]");
-  if (dir) {
-    const input = $("[data-search]");
+  /* team */
+  const people = $("[data-people]");
+  if (people) {
     const filters = $("[data-filters]");
-    const empty = $(".empty");
+    const ini = (n) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join("");
     let team = "all";
     filters.innerHTML =
-      `<button class="pill" aria-pressed="true" data-t="all">All</button>` +
-      Object.entries(S.teams).map(([k, t]) => `<button class="pill" aria-pressed="false" data-t="${k}">${t.name}</button>`).join("");
+      `<button aria-pressed="true" data-t="all">Everyone (${S.people.length})</button>` +
+      Object.entries(S.teams).map(([k, t]) => `<button aria-pressed="false" data-t="${k}">${t.name}</button>`).join("");
     const render = () => {
-      const q = input.value.trim().toLowerCase();
-      const rows = S.people.filter(
-        (p) => (team === "all" || p.teams.includes(team)) && (!q || `${p.name} ${p.role}`.toLowerCase().includes(q))
-      );
-      dir.innerHTML = rows
-        .map((p) => `<tr><td>${p.name}</td><td class="grey">${p.teams.map((k) => S.teams[k].name).join(", ") || "—"}</td><td>${p.role}</td></tr>`)
+      people.innerHTML = S.people
+        .filter((p) => team === "all" || p.teams.includes(team))
+        .map((p) => `<div class="person"><p class="cell-k"><span>${p.teams.map((k) => S.teams[k].name)[0] || "Studio"}</span></p><span class="ini">${ini(p.name)}</span><p>${p.name}</p><p class="grey">${p.role}</p></div>`)
         .join("");
-      empty.hidden = rows.length > 0;
     };
     filters.addEventListener("click", (e) => {
-      const b = e.target.closest(".pill");
+      const b = e.target.closest("button");
       if (!b) return;
       team = b.dataset.t;
-      $$(".pill", filters).forEach((x) => x.setAttribute("aria-pressed", x === b));
+      $$("button", filters).forEach((x) => x.setAttribute("aria-pressed", x === b));
       render();
     });
-    input.addEventListener("input", render);
     render();
   }
 
@@ -166,14 +174,10 @@
         } catch {
           status.textContent = "That didn't go through. Please try again.";
           btn.disabled = false;
-          btn.textContent = "Send";
+          btn.textContent = "Send →";
         }
       } else if (S.email) {
-        const body = [
-          `Name: ${fd.get("name")}`, `Email: ${fd.get("email")}`, `Organization: ${fd.get("org") || "—"}`,
-          `Needs: ${fd.getAll("type").join(", ") || "—"}`, `Timeline: ${fd.get("timeline") || "—"}`,
-          `Budget: ${fd.get("budget") || "—"}`, "", fd.get("message"),
-        ].join("\n");
+        const body = [`Name: ${fd.get("name")}`, `Email: ${fd.get("email")}`, `Organization: ${fd.get("org") || "—"}`, `Needs: ${fd.getAll("type").join(", ") || "—"}`, `Timeline: ${fd.get("timeline") || "—"}`, `Budget: ${fd.get("budget") || "—"}`, "", fd.get("message")].join("\n");
         location.href = `mailto:${S.email}?subject=${encodeURIComponent("Project inquiry")}&body=${encodeURIComponent(body)}`;
       } else {
         status.textContent = "Our inbox isn't connected yet. Check back soon.";
