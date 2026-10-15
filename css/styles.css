@@ -110,10 +110,13 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 
 /* team: just a list */
 .list { border-top: 1px solid var(--ink); margin: 0 8px 60px; }
-.list > div { display: grid; grid-template-columns: 50px minmax(180px, 1fr) 1.6fr auto; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
+.list > div { display: grid; grid-template-columns: 50px minmax(180px, 1fr) 1.6fr 210px; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px 3px 9px; font-size: 13.5px; background: rgba(255,255,255,.35); }
-.tag i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.tag { display: inline-flex; align-items: center; gap: 7px; height: 26px; padding: 0 10px 0 8px; border-radius: 4px; cursor: default;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink);
+  background: var(--card); border: 1px solid #d0d0cb; transition: background .2s, color .2s, border-color .2s; }
+.tag svg { width: 11px; height: 11px; flex: none; fill: var(--c); }
+.tag:hover { background: var(--panel); border-color: var(--panel); color: #f2f2f0; }
 .list .n { font-family: var(--dot); font-weight: 800; font-size: 18px; color: var(--grey); }
 .list .name { font-family: var(--serif); font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.02em; }
 .list .role { text-align: right; }

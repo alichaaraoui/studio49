@@ -173,12 +173,25 @@
   });
 
   /* team: a plain list with keyword chips */
-  const TAG = { Leadership: "#111", Design: "#d71921", Development: "#3b5bdb", Clients: "#e3a008", Comms: "#2f9e44", Product: "#ae3ec9", Recruiting: "#f76707", Operations: "#85857f" };
+  // each keyword: a color + a tiny 3×3 dot-matrix icon
+  const TAG = {
+    Leadership: ["#1f1f1f", "010111010"], Design: ["#e03131", "101010101"], Development: ["#3b5bdb", "110001110"],
+    Clients: ["#d9480f", "111101111"], Comms: ["#2b8a3e", "100110111"], Product: ["#9c36b5", "111010010"],
+    Recruiting: ["#e8590c", "010111101"], Operations: ["#0c8599", "101010111"],
+  };
+  const icon = (bits) => `<svg viewBox="0 0 11 11" aria-hidden="true">${[...bits].map((b, i) => (b === "1" ? `<circle cx="${1.5 + (i % 3) * 4}" cy="${1.5 + Math.floor(i / 3) * 4}" r="1.5"/>` : "")).join("")}</svg>`;
+  const chip = (t) => { const [c, bits] = TAG[t] || ["#85857f", "000010000"]; return `<span class="tag" style="--c:${c}">${icon(bits)}${t}</span>`; };
   const people = $("[data-people]");
   if (people)
     people.innerHTML = S.people
-      .map((p, i) => `<div><span class="n">${pad2(i + 1)}</span><span class="name">${p.name}</span><span class="tags">${(p.tags || []).map((t) => `<span class="tag"><i style="--c:${TAG[t] || "#85857f"}"></i>${t}</span>`).join("")}</span><span class="role mono grey">${p.role}</span></div>`)
+      .map((p, i) => `<div><span class="n">${pad2(i + 1)}</span><span class="name">${p.name}</span><span class="tags">${(p.tags || []).map(chip).join("")}</span><span class="role mono grey">${p.role}</span></div>`)
       .join("");
+
+  if (M && !still)
+    $$(".tag").forEach((t) => {
+      t.addEventListener("pointerenter", () => M.animate(t, { scale: 1.08 }, { type: "spring", stiffness: 500, damping: 15 }));
+      t.addEventListener("pointerleave", () => M.animate(t, { scale: 1 }, { type: "spring", stiffness: 500, damping: 18 }));
+    });
 
   /* entrances, scroll reveals and page transitions */
   if (M && !still) {
