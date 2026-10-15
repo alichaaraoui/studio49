@@ -3,57 +3,31 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const page = document.body.dataset.page;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* rail */
-  const links = [["index.html", "Home", "home"], ["about.html", "About", "about"], ["projects.html", "Projects", "projects"], ["team.html", "Team", "team"], ["contact.html", "Contact", "contact"], ["identity.html", "Identity", "identity"]];
-  const rail = document.createElement("aside");
-  rail.className = "rail";
-  rail.innerHTML = `
-    <a class="brand" href="index.html"><span data-seal></span><span class="wordmark">Studio 49</span></a>
-    <button class="burger" aria-expanded="false">Menu</button>
-    <nav class="menu">${links.map(([h, t, k]) => `<a href="${h}"${k === page ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</nav>
-    <div class="rail-foot">
-      ${S.email ? `<a href="mailto:${S.email}">${S.email}</a>` : ""}
-      ${S.instagram ? `<a href="${S.instagram}" target="_blank" rel="noopener">Instagram</a>` : ""}
-      <a href="contact.html">Start a project →</a>
-      <span>© ${new Date().getFullYear()} Studio 49</span>
-    </div>`;
-  document.body.prepend(rail);
-  $(".burger", rail).addEventListener("click", (e) => {
-    const open = rail.classList.toggle("open");
-    e.currentTarget.setAttribute("aria-expanded", open);
-    e.currentTarget.textContent = open ? "Close" : "Menu";
-  });
-
-  /* seals */
-  $$("[data-seal]").forEach((el) => (el.innerHTML = window.seal()));
-
-  /* home: the seal tilts toward the pointer like a plate under light */
-  const live = $("[data-seal-live]");
-  if (live) {
-    live.innerHTML = window.seal();
-    const svg = $("svg", live);
-    if (!reduce)
-      addEventListener("pointermove", (e) => {
-        const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
-        svg.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 14}deg)`;
-      }, { passive: true });
+  /* bar on inner pages: links mirrored around a centered logo */
+  if (page !== "home") {
+    const a = (h, t, k) => `<a class="caps" href="${h}"${k === page ? ' aria-current="page"' : ""}>${t}</a>`;
+    const bar = document.createElement("header");
+    bar.className = "bar";
+    bar.innerHTML = `
+      <nav class="l">${a("about.html", "About", "about")}${a("projects.html", "Projects", "projects")}</nav>
+      <a class="logo caps" href="index.html"><span class="ring" style="--s:22px"></span>Studio 49</a>
+      <nav class="r">${a("team.html", "Team", "team")}${a("contact.html", "Contact", "contact")}</nav>`;
+    document.body.prepend(bar);
   }
 
   /* team */
   const people = $("[data-people]");
   if (people) {
     const filters = $("[data-filters]");
-    const ini = (n) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join("");
     let team = "all";
     filters.innerHTML =
-      `<button aria-pressed="true" data-t="all">Everyone (${S.people.length})</button>` +
+      `<button aria-pressed="true" data-t="all">All</button>` +
       Object.entries(S.teams).map(([k, t]) => `<button aria-pressed="false" data-t="${k}">${t.name}</button>`).join("");
     const render = () => {
       people.innerHTML = S.people
         .filter((p) => team === "all" || p.teams.includes(team))
-        .map((p) => `<div class="person"><p class="cell-k"><span>${p.teams.map((k) => S.teams[k].name)[0] || "Studio"}</span></p><span class="ini">${ini(p.name)}</span><p>${p.name}</p><p class="grey">${p.role}</p></div>`)
+        .map((p, i) => `<div><span class="caps dim">${String(i + 1).padStart(2, "0")}</span><h3>${p.name}</h3><p>${p.role}</p></div>`)
         .join("");
     };
     filters.addEventListener("click", (e) => {

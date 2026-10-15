@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact — Studio 49</title>
   <meta name="description" content="Start a project with Studio 49.">
+  <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="contact">
-<main class="pane">
-  <p class="lead"><span class="caps">Contact</span>Work with us. <span class="grey">We work with student organizations, startups, nonprofits and local businesses. Tell us a little and we'll reach out.</span></p>
+<main class="page">
+  <span class="caps">Contact</span>
+  <p class="lead">Work with us. <span class="dim">Tell us a little and we'll reach out.</span></p>
   <form class="form" data-form novalidate>
     <label class="frow"><span>Name</span><input name="name" required autocomplete="name"></label>
     <label class="frow"><span>Email</span><input name="email" type="email" required autocomplete="email"></label>
@@ -32,12 +34,11 @@
     <label class="frow"><span>Budget</span><select name="budget"><option value="">Select</option><option>Unpaid / student org</option><option>Under $1k</option><option>$1k–$5k</option><option>$5k+</option><option>Not sure yet</option></select></label>
     <label class="frow"><span>About the project</span><textarea name="message" required></textarea></label>
     <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <div class="fsend"><p class="note" data-status aria-live="polite"></p><button class="btn-gold send" type="submit">Send</button></div>
+    <div class="fsend"><p class="note" data-status aria-live="polite"></p><button class="send" type="submit">Send</button></div>
   </form>
-  <div class="done" aria-live="polite"><p class="lead" style="padding:0">Thank you. <span class="grey">We got your message and will be in touch.</span></p></div>
+  <div class="done" aria-live="polite"><p class="lead">Thank you. <span class="dim">We'll be in touch.</span></p></div>
 </main>
 <script src="js/config.js"></script>
-<script src="js/seal.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
