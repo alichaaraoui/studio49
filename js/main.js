@@ -175,12 +175,12 @@
   /* team: a plain list with keyword chips */
   // each keyword: a color + a tiny 3×3 dot-matrix icon
   const TAG = {
-    Leadership: ["#1f1f1f", "010111010"], Design: ["#e03131", "101010101"], Development: ["#3b5bdb", "110001110"],
-    Clients: ["#d9480f", "111101111"], Comms: ["#2b8a3e", "100110111"], Product: ["#9c36b5", "111010010"],
-    Recruiting: ["#e8590c", "010111101"], Operations: ["#0c8599", "101010111"],
+    Leadership: ["#5f3dc4", "#e5dbff", "010111010"], Design: ["#e8590c", "#ffe3d3", "101010101"], Development: ["#1c7ed6", "#d6ecff", "110001110"],
+    Clients: ["#c2255c", "#ffdeeb", "111101111"], Comms: ["#2b8a3e", "#d8f5dd", "100110111"], Product: ["#9c36b5", "#f6d9fb", "111010010"],
+    Recruiting: ["#e67700", "#fff0c2", "010111101"], Operations: ["#0c8599", "#d0f4f7", "101010111"],
   };
   const icon = (bits) => `<svg viewBox="0 0 11 11" aria-hidden="true">${[...bits].map((b, i) => (b === "1" ? `<circle cx="${1.5 + (i % 3) * 4}" cy="${1.5 + Math.floor(i / 3) * 4}" r="1.5"/>` : "")).join("")}</svg>`;
-  const chip = (t) => { const [c, bits] = TAG[t] || ["#85857f", "000010000"]; return `<span class="tag" style="--c:${c}">${icon(bits)}${t}</span>`; };
+  const chip = (t) => { const [c, p, bits] = TAG[t] || ["#85857f", "#e9e9e6", "000010000"]; return `<span class="tag" style="--c:${c};--p:${p}">${icon(bits)}${t}</span>`; };
   const people = $("[data-people]");
   if (people)
     people.innerHTML = S.people
