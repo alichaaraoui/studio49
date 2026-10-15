@@ -8,23 +8,24 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="home" class="home">
 <main class="pane">
-  <canvas class="art" aria-label="Drop and drag rings to make a moiré pattern"></canvas>
-  <div class="cells">
-    <div class="solid"><p class="big">Designers and developers making websites, brands and products.</p><p class="small">Studio 49, a student-run studio</p></div>
-    <div></div><div></div><div></div>
-    <div></div><div></div><div></div>
-    <a class="solid" href="contact.html"><p class="small">Have a project?</p><p class="big">Work with us →</p></a>
-    <div class="solid ink"><p class="small">Every visit makes something new. Click to drop rings, drag to move them.</p><div class="btns"><button type="button" data-clear>Clear</button><button type="button" data-save>Save image</button></div></div>
-    <div></div><div></div>
-    <a class="solid" href="projects.html"><p class="small">Our first work is on the way.</p><p class="big">Projects →</p></a>
+  <div class="top caps"><span>Design &amp; development</span><span>No. 49</span></div>
+  <div class="stage-seal" data-seal-live></div>
+  <div class="bl">
+    <span class="wordmark gold-text">Studio 49</span>
+    <p>A student-run design and development studio. We make websites, brands and products.</p>
+  </div>
+  <div class="br">
+    <a class="btn-gold" href="contact.html">Work with us</a>
+    <a class="caps" href="projects.html">Projects — coming soon</a>
   </div>
 </main>
 <script src="js/config.js"></script>
+<script src="js/seal.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
