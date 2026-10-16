@@ -37,8 +37,8 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 .dotface { font-family: var(--dot); font-weight: 800; }
 
 /* ---------- Commission pill nav */
-.pills { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 40; display: flex; gap: 5px; }
-.pills > * { height: 34px; display: grid; place-items: center; border: 1.5px solid var(--ink); background: var(--bg); font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.pills { position: fixed; top: calc(18px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 40; display: flex; gap: 5px; }
+.pills > * { white-space: nowrap; height: 34px; display: grid; place-items: center; border: 1.5px solid var(--ink); background: var(--bg); font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
 .pills .logo { padding: 0 12px; font-family: var(--dot); font-weight: 800; font-size: 15px; letter-spacing: 0.06em; }
 .pills .oval { border-radius: 50%; min-width: 92px; padding: 0 14px; overflow: hidden; }
 .pills .oval span { display: block; transition: opacity .35s, transform .35s; }
@@ -68,7 +68,7 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 /* ---------- landing */
 .home { min-height: 100svh; padding: 72px 10px 10px; display: grid; grid-template-rows: 1fr auto; gap: 10px; }
 .display { position: relative; background: var(--panel); border-radius: var(--r); overflow: hidden; min-height: 58vh; }
-.display canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
+.display canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: pan-y; -webkit-tap-highlight-color: transparent; }
 .display .tag { position: absolute; top: 16px; left: 18px; right: 18px; display: flex; justify-content: space-between; color: #8b8b86; pointer-events: none; }
 .display .live::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-right: 8px; vertical-align: 1px; animation: blink 1.6s steps(1) infinite; }
 @keyframes blink { 50% { opacity: .15; } }
@@ -166,3 +166,57 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
 .w > span { display: inline-block; }
+
+/* ---------- phones */
+html { -webkit-tap-highlight-color: transparent; }
+@media (hover: none) {
+  .cardx:hover, .laws div:hover { background: var(--card); color: var(--ink); }
+  .laws div:hover { background: #e7e7e4; }
+  .cardx:hover .grey { color: var(--grey); }
+  .work:hover .screen { outline: 0; }
+  .pills a:hover, .pills .plus:hover { background: var(--bg); color: var(--ink); }
+  .menu nav a:hover { color: #6c6c68; }
+  .menu nav a[aria-current="page"] { color: #fff; }
+}
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .pills { gap: 4px; }
+  .pills > * { height: 32px; font-size: 11px; }
+  .pills .logo { font-size: 13px; padding: 0 10px; }
+  .pills .oval { min-width: 0; padding: 0 12px; }
+  .pills .plus { width: 32px; }
+  .home { padding: calc(64px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom)); min-height: 100svh; }
+  .display { min-height: 56svh; }
+  .display .tag { font-size: 10.5px; }
+  .under { padding: 14px 6px 4px; gap: 18px; }
+  .under h1 { font-size: 30px; }
+  .under .links { gap: 18px; }
+  .page { padding: calc(88px + env(safe-area-inset-top)) 8px 8px; }
+  .head { padding: 0 6px 26px; }
+  .head h1 { font-size: 56px; }
+  .menu { inset: 6px; padding: calc(70px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom)); gap: 22px; align-content: start; }
+  .menu nav a { font-size: 46px; }
+  .menu .big { font-size: 15.5vw; white-space: nowrap; }
+  .touch { min-height: 120px; }
+  .cardx { min-height: 200px; padding: 18px; }
+  .cardx .num { font-size: 48px; }
+  .cardx h3 { font-size: 26px; }
+  .laws div { flex-direction: column-reverse; gap: 6px; padding: 14px 16px; }
+  .laws span { font-size: 19px; }
+  .list { margin: 0 6px 40px; }
+  .list .name { font-size: 22px; }
+  .tags { gap: 2px 12px; }
+  .panel { padding: 30px 16px; }
+  .form input, .form textarea, .form select { font-size: 16px; }
+  .checks span { font-size: 13px; padding: 8px 14px; }
+  .send { padding: 16px; font-size: 13px; }
+  .foot { margin: 30px 6px calc(6px + env(safe-area-inset-bottom)); }
+  .foot .row { font-size: 11px; }
+  .foot .row > span:nth-child(2) { order: 3; width: 100%; flex-wrap: wrap; }
+  .foot .big { font-size: 15.5vw; white-space: nowrap; }
+}
+
+/* a soft fade under the floating pills so scrolled text doesn't collide with them */
+body:not([data-page="home"])::before { content: ""; position: fixed; left: 0; right: 0; top: 0; height: calc(76px + env(safe-area-inset-top)); z-index: 35; pointer-events: none;
+  background: linear-gradient(var(--bg) 55%, color-mix(in srgb, var(--bg) 0%, transparent)); }
+.menu-open::before { opacity: 0; }

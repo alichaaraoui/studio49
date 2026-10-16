@@ -45,6 +45,7 @@
     if (want === open) return;
     open = want;
     document.body.classList.toggle("menu-open", open);
+    document.documentElement.style.overflow = open ? "hidden" : "";
     plus.setAttribute("aria-expanded", open);
     const links = $$("nav a", menu), side = $$("aside > *", menu), letters = $$(".big span", menu);
     if (!M || still) {
@@ -77,7 +78,7 @@
   // springy hover on the menu links
   if (M && !still)
     $$("nav a", menu).forEach((a) => {
-      a.addEventListener("pointerenter", () => M.animate(a, { x: 14 }, { type: "spring", stiffness: 400, damping: 20 }));
+      a.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && M.animate(a, { x: 14 }, { type: "spring", stiffness: 400, damping: 20 }));
       a.addEventListener("pointerleave", () => M.animate(a, { x: 0 }, { type: "spring", stiffness: 400, damping: 20 }));
     });
 
@@ -112,7 +113,7 @@
       const b = cv.getBoundingClientRect();
       W = b.width; H = b.height;
       cv.width = W * dpr; cv.height = H * dpr;
-      P = small ? Math.max(7, W / 64) : Math.max(9, Math.min(15, W / 92));
+      P = small ? Math.max(6, W / 64) : W < 700 ? Math.max(6, W / 56) : Math.max(9, Math.min(15, W / 92));
       cols = Math.floor(W / P); rows = Math.floor(H / P);
       lvl = new Float32Array(cols * rows); tgt = new Uint8Array(cols * rows); delay = new Float32Array(cols * rows);
       setWord(wi, true);
@@ -120,17 +121,23 @@
     const setWord = (i, instant) => {
       wi = i;
       const w = words[i];
-      const pw = w.length * 6 - 1;
-      const s = Math.max(1, Math.min(small ? 3 : 4, Math.floor(Math.min((cols - 6) / pw, (rows - 6) / 7))));
-      const c0 = Math.floor((cols - pw * s) / 2), r0 = Math.floor((rows - 7 * s) / 2);
+      // too wide for a phone? break at the space onto two lines ("STUDIO" / "49")
+      const lines = w.length * 6 - 1 > cols - 4 && w.includes(" ") ? w.split(" ") : [w];
+      const pw = Math.max(...lines.map((l) => l.length * 6 - 1));
+      const ph = lines.length * 7 + (lines.length - 1) * 3;
+      const s = Math.max(1, Math.min(small ? 3 : 4, Math.floor(Math.min((cols - 4) / pw, (rows - 6) / ph))));
+      const r0 = Math.floor((rows - ph * s) / 2);
       tgt.fill(0);
-      [...w].forEach((ch, k) => {
-        const g = G[ch] || G[" "];
-        for (let y = 0; y < 7; y++) for (let x = 0; x < 5; x++) if (g[y * 5 + x] === "1")
-          for (let a = 0; a < s; a++) for (let b = 0; b < s; b++) {
-            const c = c0 + (k * 6 + x) * s + a, r = r0 + y * s + b;
-            if (c >= 0 && c < cols && r >= 0 && r < rows) tgt[r * cols + c] = 1;
-          }
+      lines.forEach((line, li) => {
+        const c0 = Math.floor((cols - (line.length * 6 - 1) * s) / 2), rl = r0 + li * 10 * s;
+        [...line].forEach((ch, k) => {
+          const g = G[ch] || G[" "];
+          for (let y = 0; y < 7; y++) for (let x = 0; x < 5; x++) if (g[y * 5 + x] === "1")
+            for (let a = 0; a < s; a++) for (let b = 0; b < s; b++) {
+              const c = c0 + (k * 6 + x) * s + a, r = rl + y * s + b;
+              if (c >= 0 && c < cols && r >= 0 && r < rows) tgt[r * cols + c] = 1;
+            }
+        });
       });
       t0 = performance.now();
       for (let j = 0; j < delay.length; j++) delay[j] = instant || still ? 0 : Math.random() * 700;
@@ -164,6 +171,8 @@
     const kick = () => { if (visible) raf ||= requestAnimationFrame(draw); };
     cv.addEventListener("pointermove", (e) => { const b = cv.getBoundingClientRect(); ptr = { x: e.clientX - b.left, y: e.clientY - b.top }; kick(); });
     cv.addEventListener("pointerleave", () => { ptr = null; kick(); });
+    cv.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") setTimeout(() => { ptr = null; kick(); }, 250); });
+    cv.addEventListener("pointercancel", () => { ptr = null; kick(); });
     cv.addEventListener("pointerdown", (e) => { const b = cv.getBoundingClientRect(); ripples.push({ x: e.clientX - b.left, y: e.clientY - b.top, rad: 0 }); setWord((wi + 1) % words.length); });
     new IntersectionObserver(([en]) => { visible = en.isIntersecting; kick(); }).observe(cv);
     let rt;
@@ -171,6 +180,8 @@
     layout();
     if (!still) setInterval(() => { if (!ptr) setWord((wi + 1) % words.length); }, small ? 2600 : 3200);
   });
+
+  if (matchMedia("(hover: none)").matches) $$("[data-hint]").forEach((el) => (el.textContent = "Tap the dots"));
 
   /* team: a plain list with keyword chips */
   // each keyword is a colored <bracket> tag, from the brand file
